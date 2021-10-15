@@ -1,0 +1,94 @@
+﻿<Window x:Class="LcrGame.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LcrGame"
+        xmlns:viewmodels="clr-namespace:LcrGame.ViewModels"
+        xmlns:theme="clr-namespace:Theme"
+        mc:Ignorable="d"
+        Title="LCR Game" Height="906" Width="1398.5" WindowStartupLocation="CenterScreen" Background="#FF1D1D1D">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/LCRGame;component/Theme/DarkTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <theme:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <theme:NotBooleanToVisibilityConverter x:Key="NotBooleanToVisibilityConverter"/>
+            <DataTemplate x:Key="PlayerDataTemplate">
+                <Grid Width="64" Height="88" Margin="0,0,0,12">
+                    <StackPanel>
+                        <Viewbox Width="64" Height="64" Visibility="{Binding PlayerWon, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Canvas Width="24" Height="24">
+                                <Path Fill="OrangeRed" Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z" />
+                            </Canvas>
+                        </Viewbox>
+                        <Viewbox Width="64" Height="64" Visibility="{Binding PlayerWon, Converter={StaticResource NotBooleanToVisibilityConverter}}">
+                            <Canvas Width="24" Height="24">
+                                <Path Fill="#FFC1C1C1" Data="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,6A2,2 0 0,0 10,8A2,2 0 0,0 12,10A2,2 0 0,0 14,8A2,2 0 0,0 12,6M12,13C14.67,13 20,14.33 20,17V20H4V17C4,14.33 9.33,13 12,13M12,14.9C9.03,14.9 5.9,16.36 5.9,17V18.1H18.1V17C18.1,16.36 14.97,14.9 12,14.9Z" />
+                            </Canvas>
+                        </Viewbox>
+                        <Grid Margin="0,-8,0,0" Visibility="{Binding PlayerWon, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Rectangle Stroke="OrangeRed" Fill="OrangeRed" Width="28" Height="28" RadiusX="14" RadiusY="14" StrokeThickness="2"></Rectangle>
+                            <Label Foreground="#FFECECEC" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Content="{Binding PlayerNumber}" Padding="0"></Label>
+                        </Grid>
+                        <Grid Margin="0,-8,0,0" Visibility="{Binding PlayerWon, Converter={StaticResource NotBooleanToVisibilityConverter}}">
+                            <Rectangle Stroke="#FFC1C1C1" Width="28" Height="28" RadiusX="14" RadiusY="14" StrokeThickness="2"></Rectangle>
+                            <Label Foreground="#FFECECEC" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0" Content="{Binding PlayerNumber}" Padding="0"></Label>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+            <ItemsPanelTemplate x:Key="PlayerItemsPanelTemplate">
+                <WrapPanel IsItemsHost="True" HorizontalAlignment="Center" />
+            </ItemsPanelTemplate>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.DataContext>
+        <viewmodels:ApplicationViewModel/>
+    </Window.DataContext>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="380"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="284*"/>
+                <RowDefinition Height="135*"/>
+            </Grid.RowDefinitions>
+            <Grid>
+                <ContentControl Content="{Binding PlotControl}" Margin="12" ></ContentControl>
+            </Grid>
+            <ScrollViewer Grid.Row="1" Margin="12,0,0,0">
+                <Grid>
+                    <Rectangle Fill="#FF212121"></Rectangle>
+                    <ItemsControl  ItemsSource="{Binding Players}" ItemTemplate="{DynamicResource PlayerDataTemplate}" ItemsPanel="{DynamicResource PlayerItemsPanelTemplate}"/>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+        <Grid Margin="0,12,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="260"/>
+                <RowDefinition Height="61*"/>
+            </Grid.RowDefinitions>
+            <Rectangle Grid.RowSpan="2" Fill="#FF212121"></Rectangle>
+            <StackPanel Margin="8,0,8,7.6" HorizontalAlignment="Center" MinWidth="300">
+                <Label Margin="0,0,0,8" Foreground="#FFECECEC">Preset</Label>
+                <ComboBox Margin="0,0,0,12" ItemsSource="{Binding Presets}" SelectedIndex="{Binding SelectedPreset}" IsEnabled="{Binding PlayEnabled}"></ComboBox>
+                <Label Margin="0,8" Foreground="#FFECECEC">Number of Players</Label>
+                <TextBox Margin="0,0,0,12" Text="{Binding NumberOfPlayers}" IsEnabled="{Binding PlayEnabled}" TextAlignment="Right"></TextBox>
+                <Label Margin="0,8" Foreground="#FFECECEC">Number of Games</Label>
+                <TextBox Margin="0,0,0,12" Text="{Binding NumberOfGames}" IsEnabled="{Binding PlayEnabled}" TextAlignment="Right"></TextBox>
+            </StackPanel>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <Button Command="{Binding CallbackCommand}" CommandParameter="OnPlay" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Top" IsEnabled="{Binding PlayEnabled}" Margin="0,0,15,0" Width="120">PLAY</Button>
+                <Button Command="{Binding CallbackCommand}" CommandParameter="OnCancel" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,0,0,0" Width="120">CANCEL</Button>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
