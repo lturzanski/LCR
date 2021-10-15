@@ -22,13 +22,4 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2BD802E-4A8A-4D6A-BDD4-C5408CE3AC85}
 	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://luski.visualstudio.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = LcrGame\\LcrGame.csproj
-		SccProjectName1 = LcrGame
-		SccLocalPath1 = LcrGame
-	EndGlobalSection
 EndGlobal
